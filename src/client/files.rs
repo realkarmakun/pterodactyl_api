@@ -517,4 +517,16 @@ impl Server<'_> {
             .await
             .map(|url| url.attributes.url)
     }
+
+    /// Gets a temporary upload URL to upload files with target specified
+    pub async fn get_files_upload_url_targeted(&self, target: impl Into<String>) -> crate::Result<String> {
+        #[derive(Deserialize)]
+        struct Url {
+            url: String,
+        }
+        self.client
+            .request::<PteroObject<Url>>(Method::GET, &format!("servers/{}/files/upload?file={}", self.id, target.into()))
+            .await
+            .map(|url| url.attributes.url)
+    }
 }
